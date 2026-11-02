@@ -1,0 +1,326 @@
+{
+  "entities": {
+    "passenger": {
+      "title": "Passenger",
+      "description": "Traveler details for agency tracking",
+      "type": "object",
+      "properties": {
+        "sl": { "type": "number" },
+        "name": { "type": "string" },
+        "passportNumber": { "type": "string" },
+        "companyName": { "type": "string" },
+        "inOut": { "type": "string" },
+        "phone": { "type": "string" },
+        "tradeName": { "type": "string" },
+        "agentName": { "type": "string" },
+        "agentNumber": { "type": "string" },
+        "reference": { "type": "string" },
+        "date": { "type": "string" },
+        "submissionDate": { "type": "string" },
+        "status": { 
+          "type": "string", 
+          "enum": [
+            "Passport Submit", 
+            "Medical Done", 
+            "Workpermit Issue", 
+            "Visa Online", 
+            "Embassy Submit", 
+            "Visa Reject", 
+            "Passport Return",
+            "Manpower Done",
+            "Flight Done",
+            "Processing Cancelled",
+            "Others"
+          ] 
+        },
+        "country": { "type": "string" },
+        "branch": { "type": "string" },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "url": { "type": "string" }
+            }
+          }
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string" },
+              "updatedBy": { "type": "string" },
+              "updatedByUid": { "type": "string" },
+              "timestamp": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "status", "createdBy"]
+    },
+    "user": {
+      "title": "User",
+      "description": "System user profiles and roles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["Admin", "Staff"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "staff_member": {
+      "title": "StaffMember",
+      "description": "Details of agency office staff members",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "designation": { "type": "string" },
+        "role": { "type": "string", "enum": ["Manager", "Supervisor", "Agent", "Support Staff"] },
+        "assignedAgentId": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "joiningDate": { "type": "string" },
+        "baseSalary": { "type": "number" },
+        "status": { "type": "string", "enum": ["Active", "Inactive"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "designation", "joiningDate", "baseSalary", "status"]
+    },
+    "timesheet_entry": {
+      "title": "TimesheetEntry",
+      "description": "Monthly work timesheet and logs",
+      "type": "object",
+      "properties": {
+        "staffId": { "type": "string" },
+        "monthYear": { "type": "string" },
+        "daysPresent": { "type": "number" },
+        "overtimeHours": { "type": "number" },
+        "remarks": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["staffId", "monthYear", "daysPresent"]
+    },
+    "advance_payment": {
+      "title": "AdvancePayment",
+      "description": "Advance salary payment details (Ogrim)",
+      "type": "object",
+      "properties": {
+        "staffId": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "purpose": { "type": "string" },
+        "repaymentStatus": { "type": "string", "enum": ["Pending Deduct", "Deducted", "Waived"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["staffId", "amount", "date", "purpose", "repaymentStatus"]
+    },
+    "salary_sheet": {
+      "title": "SalarySheet",
+      "description": "Monthly wages details and payout records",
+      "type": "object",
+      "properties": {
+        "staffId": { "type": "string" },
+        "monthYear": { "type": "string" },
+        "baseSalary": { "type": "number" },
+        "allowance": { "type": "number" },
+        "advanceDeducted": { "type": "number" },
+        "netPayable": { "type": "number" },
+        "isPaid": { "type": "boolean" },
+        "paidAt": { "type": "string", "format": "date-time" },
+        "remarks": { "type": "string" }
+      },
+      "required": ["staffId", "monthYear", "baseSalary", "netPayable", "isPaid"]
+    },
+    "daily_attendance": {
+      "title": "DailyAttendance",
+      "description": "Daily staff attendance record (Hajira)",
+      "type": "object",
+      "properties": {
+        "staffId": { "type": "string" },
+        "date": { "type": "string" },
+        "status": { "type": "string", "enum": ["Present", "Late", "Absent", "Half Day", "On Leave"] },
+        "checkInTime": { "type": "string" },
+        "remarks": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["staffId", "date", "status"]
+    },
+    "cash_transaction": {
+      "title": "CashTransaction",
+      "description": "Cash account ledger transaction entry (Hishaber Khata)",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string" },
+        "type": { "type": "string", "enum": ["Inflow", "Outflow"] },
+        "amount": { "type": "number" },
+        "purpose": { "type": "string" },
+        "remarks": { "type": "string" },
+        "createdByUid": { "type": "string" },
+        "createdByEmail": { "type": "string" },
+        "recipientType": { "type": "string", "enum": ["Staff", "Boss", "Passenger", "Agent", "Other"] },
+        "personName": { "type": "string" },
+        "staffId": { "type": "string" },
+        "isMedicalVoucher": { "type": "boolean" },
+        "branch": { "type": "string" },
+        "medicalCost": { "type": "number" },
+        "medicalCenter": { "type": "string" },
+        "medicalReferenceId": { "type": "string" },
+        "medicalReferenceName": { "type": "string" },
+        "medicalCommission": { "type": "number" },
+        "passengerId": { "type": "string" },
+        "passengerName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["date", "type", "amount", "purpose", "createdByUid", "createdByEmail"]
+    },
+    "agency": {
+      "title": "Agency",
+      "description": "Agent or partner agency information profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "address": { "type": "string" },
+        "remarks": { "type": "string" },
+        "createdByUid": { "type": "string" },
+        "createdByEmail": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "createdByUid", "createdByEmail"]
+    },
+    "passport_log": {
+      "title": "PassportLog",
+      "description": "Passport exchange transaction log with agencies",
+      "type": "object",
+      "properties": {
+        "agencyId": { "type": "string" },
+        "agencyName": { "type": "string" },
+        "direction": { "type": "string", "enum": ["ReceivedFromAgency", "DeliveredToAgency"] },
+        "passportCount": { "type": "number" },
+        "description": { "type": "string" },
+        "date": { "type": "string" },
+        "remarks": { "type": "string" },
+        "createdByUid": { "type": "string" },
+        "createdByEmail": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["agencyId", "agencyName", "direction", "passportCount", "date", "createdByUid", "createdByEmail"]
+    },
+    "training_enrollment": {
+      "title": "TrainingEnrollment",
+      "description": "Information about trainee student admissions and course fees",
+      "type": "object",
+      "properties": {
+        "studentName": { "type": "string" },
+        "phone": { "type": "string" },
+        "courseName": { "type": "string" },
+        "admissionDate": { "type": "string" },
+        "batchName": { "type": "string" },
+        "status": { "type": "string", "enum": ["Admitted", "Running", "Completed", "Dropped Out", "Cancelled"] },
+        "totalFee": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "dueAmount": { "type": "number" },
+        "passportNumber": { "type": "string" },
+        "reference": { "type": "string" },
+        "remarks": { "type": "string" },
+        "createdByUid": { "type": "string" },
+        "createdByEmail": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentName", "phone", "courseName", "status", "totalFee", "paidAmount", "createdByUid", "createdByEmail"]
+    },
+    "reception_lead": {
+      "title": "ReceptionLead",
+      "description": "Reception visitor registry and prospective traveler leads",
+      "type": "object",
+      "properties": {
+        "sl": { "type": "number" },
+        "receptionId": { "type": "string" },
+        "visitDate": { "type": "string" },
+        "arrivalTime": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "referredStaffId": { "type": "string" },
+        "referredStaffName": { "type": "string" },
+        "purpose": { "type": "string" },
+        "countryInterested": { "type": "string" },
+        "tradeInterested": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["New Visitor", "Interested", "Follow-up", "Admitted / Passenger", "Not Interested", "Completed"]
+        },
+        "remarks": { "type": "string" },
+        "attendedBy": { "type": "string" },
+        "branch": { "type": "string" },
+        "nextFollowUpDate": { "type": "string" },
+        "createdByUid": { "type": "string" },
+        "createdByEmail": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "phone", "visitDate", "arrivalTime", "receptionId"]
+    }
+  },
+  "firestore": {
+    "/passengers/{passengerId}": {
+      "schema": "passenger",
+      "description": "Collection of traveler passengers"
+    },
+    "/users/{uid}": {
+      "schema": "user",
+      "description": "Collection of user roles"
+    },
+    "/office_staff/{staffId}": {
+      "schema": "staff_member",
+      "description": "Collection of office staff member details"
+    },
+    "/office_timesheets/{timesheetId}": {
+      "schema": "timesheet_entry",
+      "description": "Collection of office staff monthly timesheets"
+    },
+    "/office_advances/{advanceId}": {
+      "schema": "advance_payment",
+      "description": "Collection of staff pre-salary advances"
+    },
+    "/office_salaries/{salaryId}": {
+      "schema": "salary_sheet",
+      "description": "Collection of staff calculated salaries and payout status logs"
+    },
+    "/office_attendance/{attendanceId}": {
+      "schema": "daily_attendance",
+      "description": "Collection of staff daily attendance records (Hajira)"
+    },
+    "/office_ledger/{transactionId}": {
+      "schema": "cash_transaction",
+      "description": "Collection of office income and expense transactions ledger (Cash Book / Hishaber Khata)"
+    },
+    "/agencies/{agencyId}": {
+      "schema": "agency",
+      "description": "Collection of business agents and partner agency profiles"
+    },
+    "/passport_logs/{logId}": {
+      "schema": "passport_log",
+      "description": "Collection of passport transfer transactions log"
+    },
+    "/training_enrollments/{enrollmentId}": {
+      "schema": "training_enrollment",
+      "description": "Collection of trainee students and admission course details"
+    },
+    "/reception_leads/{leadId}": {
+      "schema": "reception_lead",
+      "description": "Collection of front desk reception visitors, arrival time, and referred staff leads"
+    }
+  }
+}

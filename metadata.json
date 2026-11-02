@@ -1,0 +1,8 @@
+{
+  "name": "NexTrip Travels Manager",
+  "description": "Travel agency management system for passenger entries, status tracking, and document management.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

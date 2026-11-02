@@ -1,0 +1,139 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isSignedIn() {
+      return true;
+    }
+
+    function isAdmin() {
+      return true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Passenger Validation
+    function isValidPassenger(data) {
+      let statusOptions = [
+        "Passport Submit", 
+        "Medical Done", 
+        "Workpermit Issue", 
+        "Visa Online", 
+        "Embassy Submit", 
+        "Visa Reject", 
+        "Passport Return",
+        "Manpower Done",
+        "Flight Done",
+        "Processing Cancelled",
+        "Others"
+      ];
+
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             (!('phone' in data) || data.phone == null || data.phone is string) &&
+             (!('status' in data) || data.status in statusOptions) &&
+             (!('inOut' in data) || data.inOut == null || data.inOut is string) &&
+             (!('history' in data) || data.history == null || data.history is list) &&
+             (!('country' in data) || data.country == null || data.country is string) &&
+             (!('branch' in data) || data.branch == null || data.branch in ["nextrip", "diabari"]);
+    }
+
+    // Users Collection
+    match /users/{uid} {
+      allow read, write: if true;
+    }
+
+    // Passengers Collection
+    match /passengers/{passengerId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Office Staff Collection
+    match /office_staff/{staffId} {
+      allow read, write: if true;
+    }
+
+    // Office Timesheets Collection
+    match /office_timesheets/{timesheetId} {
+      allow read, write: if true;
+    }
+
+    // Office Advances Collection
+    match /office_advances/{advanceId} {
+      allow read, write: if true;
+    }
+
+    // Office Salaries Collection
+    match /office_salaries/{salaryId} {
+      allow read, write: if true;
+    }
+
+    // Office Daily Attendance Collection (Hajira)
+    match /office_attendance/{attendanceId} {
+      allow read, write: if true;
+    }
+
+    // Office Ledger (Hishaber Khata)
+    match /office_ledger/{transactionId} {
+      allow read, write: if true;
+    }
+
+    // Agencies Collection
+    match /agencies/{agencyId} {
+      allow read, write: if true;
+    }
+
+    // Passport Logs Collection
+    match /passport_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Training Enrollments Collection (ভর্তি ও ট্রেনিং হিসাব)
+    match /training_enrollments/{enrollmentId} {
+      allow read, write: if true;
+    }
+
+    // System Announcements & Live Breaking News Ticker (অ্যাডমিন নোটিশ ও শিরোনাম)
+    match /system_announcements/{announcementId} {
+      allow read, write: if true;
+    }
+
+    // Live Video Meetings & Conference (অ্যাডমিন ভিডিও মিটিং ও স্টাফদের লাইভ কনফারেন্স)
+    match /office_meetings/{meetingId} {
+      allow read, write: if true;
+      match /{allChildren=**} {
+        allow read, write: if true;
+      }
+    }
+
+    // Reception Leads & Visitor Register (রিসেপশন ও ভিজিটর এন্ট্রি খাতা)
+    match /reception_leads/{leadId} {
+      allow read, write: if true;
+    }
+
+    // WhatsApp Settings & Templates
+    match /whatsapp_settings/{docId} {
+      allow read, write: if true;
+    }
+
+    // WhatsApp Automated Message Logs & Queue
+    match /whatsapp_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Test connection endpoint for boot diagnostics
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
